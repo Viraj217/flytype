@@ -1,0 +1,20 @@
+{
+  "model_version": "v1_50step_logistic",
+  "description": "Logistic classifier on ANOVA-selected spike counts from 50-step connectome simulation of FlyEye L1 drive",
+  "crop_height": 69,
+  "observed_width_range": [44, 45],
+  "padding_rule": "center_median_background",
+  "grayscale": "L_channel_float32_0to1",
+  "max_input_hz": 180,
+  "simulator_steps": 50,
+  "simulator_seed": 42,
+  "n_selected_features": 500,
+  "feature_selection": "anova_f_classif_top500",
+  "classifier": "logistic_regression_unscaled",
+  "supported_letters": "abcdefghijklmnopqrstuvwxyz",
+  "supported_viewport": {"width": 1280, "height": 720},
+  "supported_dpr": 1,
+  "model_sha256": "6c0ecc1c6ef35c7f2a5b1c3bf0ac296d0b8095e56c0ed891caf16f9eb92f72ea",
+  "feature_indices_sha256": "3864ceaf15d1232e4a0ac8e358f30edd73edb81b99f14ad38498897bae805110",
+  "graph_sha256": "5a6e6fbfa5f2d3840218cb32cc0182828829c9212b483ce771cfea7718a7b947"
+}

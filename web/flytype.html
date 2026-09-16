@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Flytype Live</title>
+<style>
+:root{--bg:#05070a;--panel:#0b0f15;--panel2:#101721;--line:#202a37;--ink:#edf5ff;
+  --dim:#91a2b8;--faint:#465466;--cyan:#62e6ff;--green:#60f59a;--amber:#ffc963;--red:#ff6e7f}
+*{box-sizing:border-box}html,body{height:100%}body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:Inter,ui-sans-serif,system-ui,sans-serif;overflow:hidden}
+.app{height:100vh;padding:14px;display:grid;grid-template-rows:auto 1fr auto;gap:11px}
+.top{display:flex;align-items:center;gap:12px}.brand{font-size:27px;font-weight:750;letter-spacing:-.04em}
+.brand i{font-weight:450;color:var(--dim)}.tag{font:11px ui-monospace,monospace;letter-spacing:.15em;
+  color:var(--faint);text-transform:uppercase}.grow{flex:1}.chip{border:1px solid var(--line);background:var(--panel);
+  padding:7px 10px;border-radius:4px;color:var(--dim);font:12px ui-monospace,monospace}.chip b{color:var(--ink)}
+button{border:0;border-radius:4px;background:var(--green);color:#03200e;padding:10px 24px;cursor:pointer;
+  font:700 13px ui-monospace,monospace;letter-spacing:.1em}button:disabled{opacity:.35;cursor:default}
+.liveDot{width:8px;height:8px;border-radius:50%;background:var(--faint)}.liveDot.on{background:var(--red);
+  box-shadow:0 0 12px var(--red);animation:pulse 1.4s infinite}@keyframes pulse{50%{opacity:.3}}
+.main{min-height:0;display:grid;grid-template-columns:minmax(0,1.45fr) minmax(390px,1fr);gap:11px}
+.panel{min-width:0;min-height:0;background:var(--panel);border:1px solid var(--line);border-radius:5px;overflow:hidden;
+  display:flex;flex-direction:column}.head{height:39px;flex:0 0 auto;display:flex;align-items:center;padding:0 12px;
+  border-bottom:1px solid var(--line);color:var(--faint);font:11px ui-monospace,monospace;letter-spacing:.13em;
+  text-transform:uppercase}.head span:last-child{margin-left:auto;color:var(--cyan)}
+.browser{position:relative;flex:1;min-height:0;background:#111;overflow:hidden}.browser img,.overlay{position:absolute;
+  inset:0;width:100%;height:100%;object-fit:contain}.browser img{display:none}.placeholder{position:absolute;inset:0;
+  display:grid;place-items:center;color:var(--faint);font:12px ui-monospace,monospace;text-align:center;line-height:1.8}
+.browserNote{position:absolute;left:10px;bottom:10px;background:rgba(5,7,10,.86);border:1px solid var(--line);
+  border-radius:3px;padding:6px 9px;color:var(--dim);font:10px ui-monospace,monospace}
+.right{display:grid;grid-template-rows:minmax(0,1fr) auto;gap:11px;min-height:0}.brainPanel{min-height:0}
+.brain{position:relative;flex:1;min-height:0;background:radial-gradient(circle at 50% 48%,#101c28 0,#080c12 50%,#05070a 100%)}
+#brain{position:absolute;inset:0;width:100%;height:100%}.brainRead{position:absolute;left:14px;top:12px;
+  text-shadow:0 0 24px rgba(98,230,255,.45)}.brainRead .n{font:650 48px ui-monospace,monospace;line-height:1}
+.brainRead .u{color:var(--dim);font:10px ui-monospace,monospace;letter-spacing:.13em;text-transform:uppercase;margin-top:4px}
+.legend{position:absolute;right:12px;bottom:11px;display:grid;gap:5px;color:var(--dim);font:10px ui-monospace,monospace}
+.legend i{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:6px}.l1{background:var(--amber)}
+.sel{background:var(--green)}.ctx{background:var(--cyan)}
+.inference{display:grid;grid-template-columns:94px 150px 1fr;gap:11px;padding:12px;background:var(--panel)}
+.visionCard{min-width:0}.visionLabel{height:15px;color:var(--faint);font:9px ui-monospace,monospace;
+  letter-spacing:.1em;text-transform:uppercase;white-space:nowrap}.cropWrap,.retinaWrap{height:89px;border:1px solid var(--line);
+  background:#161c24;display:grid;place-items:center;border-radius:4px;position:relative;overflow:hidden}
+#crop{max-width:78px;max-height:78px;image-rendering:pixelated;display:none}#retina{width:100%;height:100%;display:block}
+.retinaStat{position:absolute;right:4px;bottom:3px;color:var(--dim);font:8px ui-monospace,monospace;
+  background:rgba(5,7,10,.72);padding:2px 3px}.letterRow{display:flex;align-items:baseline;gap:10px}
+#letter{font:700 55px ui-monospace,monospace;color:var(--green);line-height:.9}.confidence{color:var(--dim);
+  font:12px ui-monospace,monospace}.alternatives{display:grid;gap:5px;margin-top:9px}.alt{display:grid;
+  grid-template-columns:18px 1fr 44px;gap:7px;align-items:center;font:11px ui-monospace,monospace;color:var(--dim)}
+.bar{height:5px;background:#18212c}.bar i{display:block;height:100%;background:var(--cyan)}.alt b{text-align:right;color:var(--ink)}
+.bottom{display:grid;grid-template-columns:1.45fr 1fr;gap:11px}.metrics{display:grid;grid-template-columns:repeat(6,1fr);
+  border:1px solid var(--line);border-radius:5px;overflow:hidden;background:var(--line);gap:1px}.metric{background:var(--panel);padding:10px 12px}
+.metric .k{font:10px ui-monospace,monospace;color:var(--faint);letter-spacing:.12em;text-transform:uppercase}
+.metric .v{font:600 22px ui-monospace,monospace;margin-top:4px;white-space:nowrap}.metric .v.small{font-size:15px;margin-top:8px}
+.log{height:92px;background:var(--panel);border:1px solid var(--line);border-radius:5px;padding:8px 11px;
+  overflow:auto;font:11px/1.65 ui-monospace,monospace;color:var(--dim)}.log div{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.log time{color:var(--faint);margin-right:7px}.ok{color:var(--green)}.bad{color:var(--red)}
+@media(max-width:1000px){.main{grid-template-columns:1fr}.right{display:none}.metrics{grid-template-columns:repeat(3,1fr)}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="brand">Flytype <i>Live</i></div>
+    <div class="tag">visual typing through a simulated Drosophila connectome</div>
+    <span class="grow"></span>
+    <span class="chip"><b>165,122</b> neurons displayed</span>
+    <span class="chip"><b>500</b> classifier readouts</span>
+    <span class="liveDot" id="liveDot"></span>
+    <button id="start" disabled>START</button>
+  </header>
+
+  <main class="main">
+    <section class="panel">
+      <div class="head"><span>Monkeytype · live Chromium</span><span id="batchLabel">waiting</span></div>
+      <div class="browser">
+        <img id="shot" alt="Monkeytype viewport used by the model">
+        <canvas class="overlay" id="overlay" width="1280" height="720"></canvas>
+        <div class="placeholder" id="placeholder">Press START to open Monkeytype<br>Boxes mark every word cached from one screenshot</div>
+        <div class="browserNote">Live browser stream · model captures counted separately</div>
+      </div>
+    </section>
+
+    <div class="right">
+      <section class="panel brainPanel">
+        <div class="head"><span>Full simulated population</span><span id="activityMode">anatomical overview</span></div>
+        <div class="brain">
+          <canvas id="brain"></canvas>
+          <div class="brainRead"><div class="n" id="firing">0</div><div class="u">neurons firing in current inference</div></div>
+          <div class="legend"><span><i class="l1"></i>L1 visual input</span><span><i class="sel"></i>classifier selected</span><span><i class="ctx"></i>other firing</span></div>
+        </div>
+      </section>
+      <section class="panel">
+        <div class="head"><span>What the neurons see</span><span id="brainTime">—</span></div>
+        <div class="inference">
+          <div class="visionCard"><div class="visionLabel">model crop</div><div class="cropWrap"><img id="crop" alt="Current character crop"></div></div>
+          <div class="visionCard"><div class="visionLabel">L1 retinal drive</div><div class="retinaWrap"><canvas id="retina"></canvas><span class="retinaStat" id="retinaStat">892 columns</span></div></div>
+          <div>
+            <div class="letterRow"><span id="letter">—</span><span class="confidence" id="confidence">waiting for prediction</span></div>
+            <div class="alternatives" id="alternatives"></div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="bottom">
+    <div class="metrics">
+      <div class="metric"><div class="k">Words</div><div class="v" id="words">0</div></div>
+      <div class="metric"><div class="k">Characters</div><div class="v" id="characters">0</div></div>
+      <div class="metric"><div class="k">Estimated WPM</div><div class="v" id="wpm">0</div></div>
+      <div class="metric"><div class="k">Model captures</div><div class="v" id="captures">0</div></div>
+      <div class="metric"><div class="k">Visible batch</div><div class="v small" id="visible">—</div></div>
+      <div class="metric"><div class="k">Selected firing</div><div class="v small" id="selected">0 / 500</div></div>
+    </div>
+    <div class="log" id="log"></div>
+  </footer>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+function log(message,cls=''){const d=document.createElement('div');d.className=cls;
+  d.innerHTML='<time>'+new Date().toLocaleTimeString([], {hour12:false})+'</time>'+message;
+  $('log').appendChild(d);$('log').scrollTop=$('log').scrollHeight;}
+function bytes(b64){return Uint8Array.from(atob(b64),c=>c.charCodeAt(0));}
+function uint32(b64){const b=bytes(b64);return new Uint32Array(b.buffer,b.byteOffset,Math.floor(b.byteLength/4));}
+
+let XYZ=null,GROUP=null,N=0,px=null,py=null,pz=null,sx=null,sy=null,live=false;
+let activityIdx=new Uint32Array(0),activityVal=new Uint8Array(0),activityAt=0;
+const brain=$('brain'),bc=brain.getContext('2d'),base=document.createElement('canvas'),baseCtx=base.getContext('2d');
+function fitBrain(){const r=brain.parentElement.getBoundingClientRect(),d=devicePixelRatio||1;
+  brain.width=Math.max(2,Math.floor(r.width*d));brain.height=Math.max(2,Math.floor(r.height*d));
+  base.width=brain.width;base.height=brain.height;if(!N)return;
+  const W=brain.width,H=brain.height,theta=.35,ct=Math.cos(theta),st=Math.sin(theta),S=Math.min(W,H)*.53;
+  sx=new Float32Array(N);sy=new Float32Array(N);baseCtx.clearRect(0,0,W,H);
+  baseCtx.globalCompositeOperation='screen';
+  for(let i=0;i<N;i++){sx[i]=W/2+(px[i]*ct-py[i]*st)*S;sy[i]=H/2+pz[i]*S;
+    const g=GROUP[i];baseCtx.globalAlpha=(g&4)?.09:(g&3)?.18:.06;
+    baseCtx.fillStyle=(g&2)?'#315d45':(g&1)?'#66532e':(g&4)?'#27303a':'#42566b';
+    baseCtx.beginPath();baseCtx.arc(sx[i],sy[i],0.9*d,0,6.283);baseCtx.fill()}
+  baseCtx.globalCompositeOperation='source-over';
+  baseCtx.globalAlpha=1;}
+addEventListener('resize',fitBrain);
+fetch('/neurons').then(async response=>{const n=+response.headers.get('X-Count'),buffer=await response.arrayBuffer();
+  XYZ=new Float32Array(buffer,0,n*3);GROUP=new Uint8Array(buffer,n*12,n);N=n;
+  px=new Float32Array(n);py=new Float32Array(n);pz=new Float32Array(n);let a=[Infinity,-Infinity,Infinity,-Infinity,Infinity,-Infinity];
+  for(let i=0;i<n;i++){const x=XYZ[i*3],y=XYZ[i*3+1],z=XYZ[i*3+2];a[0]=Math.min(a[0],x);a[1]=Math.max(a[1],x);
+    a[2]=Math.min(a[2],y);a[3]=Math.max(a[3],y);a[4]=Math.min(a[4],z);a[5]=Math.max(a[5],z)}
+  const cx=(a[0]+a[1])/2,cy=(a[2]+a[3])/2,cz=(a[4]+a[5])/2,s=Math.max(a[1]-a[0],a[3]-a[2],a[5]-a[4])/2;
+  for(let i=0;i<n;i++){px[i]=(XYZ[i*3]-cx)/s;py[i]=(XYZ[i*3+1]-cy)/s;pz[i]=(XYZ[i*3+2]-cz)/s}
+  fitBrain();$('start').disabled=false;log('All '+n.toLocaleString()+' simulated neurons loaded','ok');});
+
+function drawBrain(now){if(N&&sx){const W=brain.width,H=brain.height,d=devicePixelRatio||1;bc.fillStyle='#06090e';bc.fillRect(0,0,W,H);bc.drawImage(base,0,0);
+  const fade=Math.max(.24,1-(now-activityAt)/900);bc.globalCompositeOperation='lighter';
+  for(let j=0;j<activityIdx.length;j++){const i=activityIdx[j];if(i>=N)continue;
+    const g=GROUP[i];bc.fillStyle=(g&1)?'#ffc963':(g&2)?'#60f59a':'#62e6ff';
+    const size=(2.0+Math.min(3.2,activityVal[j]*.2))*d;
+    bc.globalAlpha=fade*0.45;
+    bc.beginPath();bc.arc(sx[i],sy[i],size*1.3,0,6.283);bc.fill();
+    bc.globalAlpha=fade;
+    bc.beginPath();bc.arc(sx[i],sy[i],size/1.8,0,6.283);bc.fill();}
+  bc.globalCompositeOperation='source-over';bc.globalAlpha=1}
+  requestAnimationFrame(drawBrain)}requestAnimationFrame(drawBrain);
+
+let RETINA=null;const retina=$('retina'),rc=retina.getContext('2d');
+fetch('/retina').then(async response=>{const n=+response.headers.get('X-Count'),buffer=await response.arrayBuffer();
+  RETINA=new Float32Array(buffer);$('retinaStat').textContent=n.toLocaleString()+' L1 columns';drawRetina(new Uint8Array(n));});
+function drawRetina(rates){const rect=retina.getBoundingClientRect(),d=devicePixelRatio||1;
+  retina.width=Math.max(2,Math.floor(rect.width*d));retina.height=Math.max(2,Math.floor(rect.height*d));
+  rc.fillStyle='#080b10';rc.fillRect(0,0,retina.width,retina.height);if(!RETINA)return;
+  const pad=5*d,w=retina.width-pad*2,h=retina.height-pad*2,r=Math.max(1.2*d,Math.min(w,h)/36);
+  for(let i=0;i<rates.length;i++){const q=rates[i]/255,x=pad+RETINA[i*2]*w,y=pad+RETINA[i*2+1]*h;
+    rc.globalAlpha=.18+.82*q;rc.fillStyle=q>.55?'#fff2a8':q>.25?'#ffc963':'#527287';rc.beginPath();rc.arc(x,y,r,0,6.283);rc.fill()}rc.globalAlpha=1;}
+
+let geometry=[];const overlay=$('overlay'),oc=overlay.getContext('2d');
+function drawBoxes(activeWord=-1,activeLetter=-1){oc.clearRect(0,0,1280,720);geometry.forEach((word,wi)=>word.boxes.forEach((b,li)=>{
+  const active=wi===activeWord&&li===activeLetter;oc.strokeStyle=active?'#60f59a':'rgba(98,230,255,.42)';oc.lineWidth=active?3:1.25;
+  oc.fillStyle=active?'rgba(96,245,154,.14)':'rgba(98,230,255,.035)';oc.fillRect(b.x-2,b.y-2,b.width+4,b.height+4);
+  oc.strokeRect(b.x-2,b.y-2,b.width+4,b.height+4)}));}
+function alternatives(items){$('alternatives').innerHTML=(items||[]).map(x=>'<div class="alt"><span>'+x.letter+'</span><span class="bar"><i style="width:'+
+  (x.probability*100).toFixed(1)+'%"></i></span><b>'+(x.probability*100).toFixed(1)+'%</b></div>').join('')}
+
+function handle(m){
+  if(m.type==='session_started'){live=true;activityIdx=new Uint32Array(0);activityVal=new Uint8Array(0);$('firing').textContent='0';
+    $('liveDot').classList.add('on');$('activityMode').textContent='waiting for inference';
+    log('Session started · '+m.brain_steps+' brain steps per character','ok');return}
+  if(m.type==='status'){log(m.message);return}
+  if(m.type==='browser_frame'){$('shot').src='data:image/jpeg;base64,'+m.frame;$('shot').style.display='block';
+    $('placeholder').style.display='none';return}
+  if(m.type==='batch_captured'){geometry=m.geometry||[];$('shot').src='data:image/png;base64,'+m.screenshot;$('shot').style.display='block';
+    $('placeholder').style.display='none';$('batchLabel').textContent='batch '+m.batch;$('captures').textContent=m.inference_captures;
+    $('visible').textContent=m.visible_words+' words · '+m.visible_rows+' rows';drawBoxes();log('Batch '+m.batch+': '+m.visible_words+' words from one screenshot');return}
+  if(m.type==='inference'){live=true;$('activityMode').textContent='actual inference activity';$('letter').textContent=m.prediction;
+    $('confidence').textContent=m.confidence==null?'confidence unavailable':(m.confidence*100).toFixed(1)+'% confidence';
+    $('brainTime').textContent=m.brain_ms.toFixed(1)+' ms';$('crop').src='data:image/png;base64,'+m.crop;$('crop').style.display='block';
+    $('firing').textContent=m.firing_neurons.toLocaleString();$('selected').textContent=m.selected_firing+' / 500';alternatives(m.alternatives);
+    drawBoxes(m.word_index,m.letter_index);activityIdx=uint32(m.activity_indices);activityVal=bytes(m.activity_counts);activityAt=performance.now();
+    const retinal=bytes(m.retina_rates);drawRetina(retinal);$('retinaStat').textContent=m.retina_columns.toLocaleString()+' L1 · '+m.retina_mean_hz.toFixed(1)+' Hz mean';return}
+  if(m.type==='key_sent'){$('characters').textContent=m.characters;$('words').textContent=m.words;$('wpm').textContent=m.wpm;return}
+  if(m.type==='word_completed'){$('words').textContent=m.words;$('characters').textContent=m.characters;$('wpm').textContent=m.wpm;
+    log('Typed “'+m.prediction+'”');return}
+  if(m.type==='cache_invalidated'){log('New capture needed: '+m.reason);return}
+  if(m.type==='error'){log(m.message,'bad');return}
+  if(m.type==='session_finished'){live=false;$('liveDot').classList.remove('on');$('activityMode').textContent='last measured inference';$('start').disabled=false;
+    $('batchLabel').textContent=m.stop_reason;$('words').textContent=m.words;$('characters').textContent=m.characters;$('wpm').textContent=m.wpm;
+    $('captures').textContent=m.inference_captures;const shown=m.monkeytype||{};log('Finished · '+m.stop_reason+(shown.accuracy?' · Monkeytype accuracy '+shown.accuracy:''),'ok');return}
+}
+
+let socket=null;$('start').onclick=()=>{$('start').disabled=true;$('log').innerHTML='';log('Connecting to Flytype…');
+  socket=new WebSocket((location.protocol==='https:'?'wss://':'ws://')+location.host+'/run');
+  socket.onopen=()=>{const words=Number(new URLSearchParams(location.search).get('words')||0);
+    socket.send(JSON.stringify({action:'start',words:words}))};socket.onmessage=e=>handle(JSON.parse(e.data));
+  socket.onerror=()=>log('Dashboard connection failed','bad');socket.onclose=()=>{if(live){live=false;$('liveDot').classList.remove('on');
+    $('activityMode').textContent='last received activity';$('start').disabled=false;log('Connection closed')}}};
+</script>
+</body>
+</html>

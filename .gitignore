@@ -5,15 +5,81 @@
 
 # 1.1 GB of connectome downloaded from Janelia's public bucket; the README
 # says exactly how to fetch it, and build_graph.py turns it into build/graph.npz
-data/
+data/*
+!data/body-annotations.feather
 
 # derived artefacts, recordings, scratch
-build/
+build/*
+!build/graph.npz
+!build/mb_gains.npz
+!build/gains_ui.npz
 scratch/
 __pycache__/
 *.pyc
 *.mp4
 *.webm
 
-# trained gains are small and reproducible, but they ARE a result - keep them
-!build/gains_ui.npz
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.code-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Python tooling
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+
+# Experiment caches
+dataset_cache/
+representation_cache/
+sensory_dynamics_cache/
+monkeytype_dataset/
+monkeytype_dataset_old/
+monkeytype_dataset_bad/
+experiments/
+debug_crops/
+live_validation_wrong/
+
+# Generated experiment images
+experiments/*.png
+experiments/*.jpg
+experiments/*.jpeg
+
+# NumPy / dataset outputs
+*.npy
+!models/*.npy
+*.npz
+!build/*.npz
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp

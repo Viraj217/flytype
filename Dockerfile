@@ -24,5 +24,5 @@ COPY data/ data/
 
 COPY *.py ./
 COPY web/ web/
-
-CMD ["python", "roam.py"]
+COPY models/ models/
+CMD ["python", "flytype_live.py"]

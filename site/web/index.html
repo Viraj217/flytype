@@ -1020,7 +1020,7 @@ let tickN = 0;
 /* The fly has a permanent home now: a Railway service that stays up when
    nobody's desk is on. It is tried first. The tunnel address in live.json is
    only the fallback, for when the fly is being run from a laptop. */
-const STABLE_STREAM = 'https://flybrain-production-2b26.up.railway.app';
+const STABLE_STREAM = 'https://flytype-production.up.railway.app';
 async function findStableStream(){
   try {
     const r = await fetch(STABLE_STREAM + '/status', {cache: 'no-store'});
