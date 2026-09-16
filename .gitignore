@@ -62,8 +62,13 @@ sensory_dynamics_cache/
 monkeytype_dataset/
 monkeytype_dataset_old/
 monkeytype_dataset_bad/
+monkeytype_brain_cache/
+monkeytype_brain_cache_50/
+monkeytype_brain_cache_v2_50_bad/
+monkeytype_brain_cache_v3_50/
 experiments/
 debug_crops/
+debug_bad_crops/
 live_validation_wrong/
 
 # Generated experiment images
