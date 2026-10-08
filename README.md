@@ -7,6 +7,10 @@ measured from an actual male *Drosophila melanogaster* by electron microscopy â€
 not invented, not sampled from a distribution, not a neural network "inspired
 by" a brain.
 
+## Demo
+
+https://github.com/user-attachments/assets/dceae265-9131-4046-873b-e4c87d6f5279
+
 ## How it works
 
 Flytype connects the visual processing and neural activity of a simulated fruit fly brain to a browser to read and type characters.
